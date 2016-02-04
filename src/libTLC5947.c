@@ -25,6 +25,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
+#include <stdint.h>
+
 unsigned char * convert_24x12bit_to_36x8bit(unsigned short dataIn[24]) {
   // dataIn contains 24 12 bit numbers wrapped in 16 bit containers. So
   // dataIn[i] & 0x0FFF = dataIn[i] for all i.
