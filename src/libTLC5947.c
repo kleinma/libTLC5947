@@ -24,3 +24,36 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
+
+unsigned char * convert_24x12bit_to_36x8bit(unsigned short dataIn[24]) {
+  // dataIn contains 24 12 bit numbers wrapped in 16 bit containers. So
+  // dataIn[i] & 0x0FFF = dataIn[i] for all i.
+  // Each 12 bit number of dataIn will be fed sequentially into an array of 8
+  // bit numbers starting sequentially with the MSB of dataIn[23] and ending
+  // with the LSB of dataIn[0].
+
+  // Create the 8 bit array, dataOut.
+  static unsigned char dataOut[36];
+
+  // Then iterate, backwards, through each element of dataIn
+  // For each 12 bit number of dataIn, 1.5 8 bit numbers of dataOut will be
+  // filled.
+  // Used fixed n = 24
+  int n = 24;
+  for ( int i = 0; i < n; i++ ) {
+    if ((i+1)%2) {// If i is even ...
+      // MS 8 bits of dataIn fills whole byte of dataOut
+      dataOut[(int)(i*1.5)] = ( dataIn[(n-1)-i] >> 4 ) & 0x00FF;
+      // LS 4 bits of dataIn fills upper half of byte of dataOut
+      dataOutut[(int)(i*1.5+1)] = ( dataIn[(n-1)-i] << 4 ) & 0x00F0;
+    }
+    else {// If i is odd ...
+      // MS 4 bits of dataIn fills lower half of byte of dataOut
+      dataOut[(int)(i*1.5-0.5)] |= ( dataIn[(n-1)-i] >> 8 ) & 0x000F;
+      // LS 8 bits of dataIn fills whole byte of dataOut
+      dataOut[(int)(i*1.5-0.5+1)] = ( dataIn[(n-1)-i] ) & 0x00FF;
+    }
+  }
+
+  return dataOut;
+}

@@ -24,3 +24,13 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
+
+#ifndef __LIBTLC5947_H_INCLUDED__
+#define __LIBTLC5947_H_INCLUDED__
+
+/******************************************************************************
+
+******************************************************************************/
+unsigned char * convert_24x12bit_to_36x8bit(unsigned short dataIn[24]);
+
+#endif
