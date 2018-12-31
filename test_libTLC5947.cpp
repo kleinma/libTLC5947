@@ -25,29 +25,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#include <gtest/gtest.h>
-#include "libTLC5947/libTLC5947.h"
+#include "gtest/gtest.h"
+#include "libTLC5947.h"
+#include <stdint.h>
 
 TEST(convert_data_test, compile_test) {
-  unsigned short dataIn[24] = {0x0000, 0x0001, 0x0002, 0x0003,
-			       0x0004, 0x0005, 0x0006, 0x0007,
-			       0x0008, 0x0009, 0x000A, 0x000B,
-			       0x000C, 0x000D, 0x000E, 0x000F,
-			       0x0010, 0x0012, 0x0013, 0x0014,
-			       0x0015, 0x0016, 0x0017, 0x0018};
+  uint16_t dataIn[24] = {0x0000, 0x0001, 0x0002, 0x0003,
+			 0x0004, 0x0005, 0x0006, 0x0007,
+			 0x0008, 0x0009, 0x000A, 0x000B,
+			 0x000C, 0x000D, 0x000E, 0x000F,
+			 0x0010, 0x0012, 0x0013, 0x0014,
+			 0x0015, 0x0016, 0x0017, 0x0018};
+  uint8_t dataOut[36];
+  //  Nbit_array_to_8bit_array(dataIn, 24, 12, dataOut, 36);
 
-  unsigned char dataOutExpected[36] = {1, 128, 23, 1, 96, 21,
-				       1, 64, 19, 1, 32, 16,
-				       0, 240, 14, 0, 208, 12,
-				       0, 176, 10, 0, 144, 8,
-				       0, 112, 6, 0, 80, 4,
-				       0, 48, 2, 0, 16, 0};
+  uint8_t dataOutExpected[36] = {1, 128, 23, 1, 96, 21,
+				 1, 64, 19, 1, 32, 16,
+				 0, 240, 14, 0, 208, 12,
+				 0, 176, 10, 0, 144, 8,
+				 0, 112, 6, 0, 80, 4,
+				 0, 48, 2, 0, 16, 0};
 
-  unsigned char *dataOutActual;
-  dataOutActual = convert_24x12bit_to_36x8bit(dataIn);
-
-  // pointers are confusing!
-  EXPECT_TRUE(EIGEN_MATRIX_NEAR(dataOutActual,dataOutExpected);
+  EXPECT_EQ(dataOut,dataOutExpected);
 }
 
 GTEST_API_ int main(int argc, char** argv) {

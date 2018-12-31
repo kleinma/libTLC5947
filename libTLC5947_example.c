@@ -1,6 +1,7 @@
 /******************************************************************************
-libTLC5947.h
-Library for the TI TLC5947 24 Channel 12-Bit PWM LED Driver.
+libTLC5947_example.c
+Example code using the Library for the TI TLC5947 24 Channel 12-Bit PWM LED
+Driver.
 *******************************************************************************
 The MIT License (MIT)
 
@@ -25,12 +26,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ******************************************************************************/
 
-#ifndef __LIBTLC5947_H_INCLUDED__
-#define __LIBTLC5947_H_INCLUDED__
+#include <stdio.h>
+#include "libTLC5947.h"
 
-/******************************************************************************
+int main(void) {
+  uint16_t dataIn[24] = {0x0000, 0x0001, 0x0002, 0x0003,
+			 0x0004, 0x0005, 0x0006, 0x0007,
+			 0x0008, 0x0009, 0x000A, 0x000B,
+			 0x000C, 0x000D, 0x000E, 0x000F,
+			 0x0010, 0x0012, 0x0013, 0x0014,
+			 0x0015, 0x0016, 0x0017, 0x0018};
+  uint8_t dataOut[36];
+  Nbit_array_to_8bit_array(dataIn, 24, 12, dataOut, 36);
+  int i;
+  for (i = 0; i < 24; i++) {
+    printf("%.3X", dataIn[23-i]);
+  }
+  printf("\n");
 
-******************************************************************************/
-unsigned char * convert_24x12bit_to_36x8bit(unsigned short dataIn[24]);
-
-#endif
+  printf("");
+  for (i = 0; i < 36; i++) {
+    printf("%.2X", dataOut[i]);
+  }
+  printf("\n");
+  return 0;
+}

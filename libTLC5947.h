@@ -1,5 +1,5 @@
 /******************************************************************************
-libTLC5947.c
+libTLC5947.h
 Library for the TI TLC5947 24 Channel 12-Bit PWM LED Driver.
 *******************************************************************************
 The MIT License (MIT)
@@ -27,35 +27,34 @@ SOFTWARE.
 
 #include <stdint.h>
 
-unsigned char * convert_24x12bit_to_36x8bit(unsigned short dataIn[24]) {
-  // dataIn contains 24 12 bit numbers wrapped in 16 bit containers. So
-  // dataIn[i] & 0x0FFF = dataIn[i] for all i.
-  // Each 12 bit number of dataIn will be fed sequentially into an array of 8
-  // bit numbers starting sequentially with the MSB of dataIn[23] and ending
-  // with the LSB of dataIn[0].
+#ifndef __LIBTLC5947_H_INCLUDED__
+#define __LIBTLC5947_H_INCLUDED__
 
-  // Create the 8 bit array, dataOut.
-  static unsigned char dataOut[36];
+/*! ---------------------------------------------------------------------------
+ * @fn Nbit_array_to_8bit_array()
+ *
+ * @brief This function unpacks the N LSBs of integers in a 16 bit array and
+ * packages them sequentially in an 8 bit array starting with the MSB of the
+ * last element of the array. This can be used to transform data whose length
+ * is not divisible by 8 bits and send it MSB first over a hardware SPI.
+ *
+ * input parameters:
+ * @param dataIn      - Pointer to an array of 16 bit integers containing 0-16
+ *                      bit data.
+ * @param dataInSize  - Number of elements in dataIn.
+ * @param dataInBits  - Number between 0 and 16. This is the MSB of dataIn that
+ *                      will be placed in dataOut.
+ * @param dataOut     - Pointer to an array of 8 bit integers that will contain
+ *                      all the data that was in dataIn.
+ * @param dataOutSize - number of elements in dataOut. Should be
+ *                      dataOutSize = dataInSize*dataInBits/8
+ *
+ * output parameters:
+ *
+ * @returns           - 0 for succes, or 1 for error
+ */
+int Nbit_array_to_8bit_array(const uint16_t *dataIn, uint16_t dataInSize,
+			     uint16_t dataInBits, uint8_t *dataOut,
+			     uint16_t dataOutSize);
 
-  // Then iterate, backwards, through each element of dataIn
-  // For each 12 bit number of dataIn, 1.5 8 bit numbers of dataOut will be
-  // filled.
-  // Used fixed n = 24
-  int n = 24;
-  for ( int i = 0; i < n; i++ ) {
-    if ((i+1)%2) {// If i is even ...
-      // MS 8 bits of dataIn fills whole byte of dataOut
-      dataOut[(int)(i*1.5)] = ( dataIn[(n-1)-i] >> 4 ) & 0x00FF;
-      // LS 4 bits of dataIn fills upper half of byte of dataOut
-      dataOutut[(int)(i*1.5+1)] = ( dataIn[(n-1)-i] << 4 ) & 0x00F0;
-    }
-    else {// If i is odd ...
-      // MS 4 bits of dataIn fills lower half of byte of dataOut
-      dataOut[(int)(i*1.5-0.5)] |= ( dataIn[(n-1)-i] >> 8 ) & 0x000F;
-      // LS 8 bits of dataIn fills whole byte of dataOut
-      dataOut[(int)(i*1.5-0.5+1)] = ( dataIn[(n-1)-i] ) & 0x00FF;
-    }
-  }
-
-  return dataOut;
-}
+#endif
